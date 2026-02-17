@@ -1,4 +1,4 @@
-'use server';
+export const runtime = 'nodejs';
 
 import { scryptSync, timingSafeEqual } from 'crypto';
 import { redirect } from 'next/navigation';
