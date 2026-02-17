@@ -1,5 +1,7 @@
 'use server';
 
+export const runtime = 'nodejs';
+
 import { sql } from './db';
 import { WEEKLY_PLAN, getWeekStart } from './study-plan';
 import type { WeekData, StudyDay } from './types';
@@ -14,14 +16,6 @@ function toISOStr(val: unknown): string {
   return String(val);
 }
 
-async function getOrCreateUser(): Promise<number> {
-  const rows = await sql`SELECT id FROM users LIMIT 1`;
-  if (rows.length > 0) return Number(rows[0].id);
-
-  const created =
-    await sql`INSERT INTO users (name) VALUES ('Estudante') RETURNING id`;
-  return Number(created[0].id);
-}
 
 async function getOrCreateWeek(userId: number): Promise<number> {
   const weekStart = getWeekStart();
@@ -103,12 +97,12 @@ async function getOrCreateWeek(userId: number): Promise<number> {
   return weekId;
 }
 
-export async function getWeekData(): Promise<WeekData> {
-  const userId = await getOrCreateUser();
+export async function getWeekData(userId: number): Promise<WeekData> {
   const weekId = await getOrCreateWeek(userId);
 
   const weekRows = await sql`
-    SELECT * FROM study_weeks WHERE id = ${weekId}
+    SELECT * FROM study_weeks
+WHERE id = ${weekId} AND user_id = ${userId}
   `;
   const week = weekRows[0];
 
