@@ -1,12 +1,11 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { BookOpen, LogIn, Loader2 } from 'lucide-react';
-
-type LoginState = { error: string } | null;
+import { useFormStatus } from 'react-dom';
+import { LogIn, Loader2 } from 'lucide-react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+
   return (
     <button
       type="submit"
@@ -23,18 +22,12 @@ function SubmitButton() {
   );
 }
 
-export function LoginForm({
-  action,
-}: {
-  action: (prevState: LoginState, formData: FormData) => Promise<LoginState>;
-}) {
-  const [state, formAction] = useFormState<LoginState, FormData>(action, null);
-
+export function LoginForm({ error }: { error?: string }) {
   return (
-    <form action={formAction} className="space-y-4">
-      {state?.error && (
+    <>
+      {error && (
         <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2.5">
-          {state.error}
+          Usuário ou senha incorretos.
         </div>
       )}
 
@@ -68,6 +61,6 @@ export function LoginForm({
       </div>
 
       <SubmitButton />
-    </form>
+    </>
   );
 }
