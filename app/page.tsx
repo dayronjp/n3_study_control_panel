@@ -1,3 +1,4 @@
+import { Dashboard } from '@/components/Dashboard';
 import { getWeekData, toggleTask } from '@/lib/actions';
 import { getSession } from '@/lib/session';
 import { logout } from '@/lib/auth';
@@ -56,7 +57,7 @@ export default async function Home() {
         </nav>
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-          <Dashboard initialData={data} toggleTask={toggleTask} />
+          <Dashboard initialData={data} />
         </div>
       </main>
     </LangProvider>
