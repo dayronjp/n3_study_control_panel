@@ -5,7 +5,6 @@ import { logout } from '@/lib/auth';
 import { LangProvider } from '@/components/LangContext';
 import { LangToggle } from '@/components/LangToggle';
 import { BookOpen, LogOut } from 'lucide-react';
-import { Torii } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
