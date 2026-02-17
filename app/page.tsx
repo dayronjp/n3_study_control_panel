@@ -1,12 +1,11 @@
-import { getWeekData } from '@/lib/actions';
-import { Dashboard } from '@/components/Dashboard';
+import { getWeekData, toggleTask } from '@/lib/actions';
 import { getSession } from '@/lib/session';
 import { logout } from '@/lib/auth';
 import { LangProvider } from '@/components/LangContext';
 import { LangToggle } from '@/components/LangToggle';
 import { BookOpen, LogOut } from 'lucide-react';
 import { redirect } from 'next/navigation';
-import { getWeekData, toggleTask } from '@/lib/actions';
+
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
