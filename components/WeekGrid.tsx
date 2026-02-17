@@ -3,13 +3,22 @@ import type { StudyDay } from '@/lib/types';
 
 interface WeekGridProps {
   days: StudyDay[];
+  lang: string;
+  onToggle: (id: string) => void;
 }
 
-export function WeekGrid({ days }: WeekGridProps) {
+
+export function WeekGrid({ days, lang, onToggle }: WeekGridProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {days.map((day, index) => (
-        <DayCard key={day.id} day={day} index={index} />
+        <DayCard
+          key={day.id}
+          day={day}
+          index={index}
+          lang={lang}
+          onToggle={onToggle}
+        />
       ))}
     </div>
   );
