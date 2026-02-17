@@ -3,6 +3,8 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import { BookOpen, LogIn, Loader2 } from 'lucide-react';
 
+type LoginState = { error: string } | null;
+
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -21,8 +23,12 @@ function SubmitButton() {
   );
 }
 
-export function LoginForm({ action }: { action: any }) {
-  const [state, formAction] = useFormState(action, null);
+export function LoginForm({
+  action,
+}: {
+  action: (prevState: LoginState, formData: FormData) => Promise<LoginState>;
+}) {
+  const [state, formAction] = useFormState<LoginState, FormData>(action, null);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -36,7 +42,12 @@ export function LoginForm({ action }: { action: any }) {
         <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
           Usuário
         </label>
-        <input name="name" type="text" required autoComplete="username" autoFocus
+        <input
+          name="name"
+          type="text"
+          required
+          autoComplete="username"
+          autoFocus
           placeholder="seu nome de usuário"
           className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 transition-all duration-150"
         />
@@ -46,7 +57,11 @@ export function LoginForm({ action }: { action: any }) {
         <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
           Senha
         </label>
-        <input name="password" type="password" required autoComplete="current-password"
+        <input
+          name="password"
+          type="password"
+          required
+          autoComplete="current-password"
           placeholder="••••••••"
           className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 transition-all duration-150"
         />
