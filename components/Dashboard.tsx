@@ -69,7 +69,7 @@ export function Dashboard({ initialData }: DashboardProps) {
     setUndoStack(rest);
     setShowUndo(rest.length > 0);
     if (undoTimer) clearTimeout(undoTimer);
-
+  
     // Revert UI
     setDays((prev) =>
       prev.map((day) => {
@@ -85,11 +85,9 @@ export function Dashboard({ initialData }: DashboardProps) {
       })
     );
 
-    // Persist undo to DB
-    import('@/lib/actions').then(({ toggleTask }) => {
-      toggleTask(last.taskId, last.prevCompleted);
-    });
-  }, [undoStack, undoTimer]);
+  // Persist undo to DB via Server Action
+  toggleTask(last.taskId, last.prevCompleted);
+}, [undoStack, undoTimer, toggleTask]);
 
   // Cleanup timer on unmount
   useEffect(() => {
