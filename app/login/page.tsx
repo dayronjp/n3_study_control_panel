@@ -2,11 +2,12 @@ import { login } from '@/lib/auth';
 import { LoginForm } from '@/components/LoginForm';
 
 interface LoginPageProps {
-  searchParams?: { error?: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export default function LoginPage({ searchParams }: LoginPageProps) {
-  const error = searchParams?.error;
+  const errorParam = searchParams?.error;
+  const error = Array.isArray(errorParam) ? errorParam[0] : errorParam;
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4">
