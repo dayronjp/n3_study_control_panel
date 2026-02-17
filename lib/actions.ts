@@ -92,11 +92,12 @@ async function getOrCreateWeek(userId: number): Promise<number> {
   return weekId;
 }
 
-export async function getWeekData(): Promise<WeekData> {
-  const userId = await getOrCreateUser();
+export async function getWeekData(userId: number): Promise<WeekData> {
   const weekId = await getOrCreateWeek(userId);
 
-  const weekRows = await sql`SELECT * FROM study_weeks WHERE id = ${weekId}`;
+  const weekRows = await sql`
+    SELECT * FROM study_weeks WHERE id = ${weekId} AND user_id = ${userId}
+  `;
   const week = weekRows[0];
 
   const dayRows = await sql`
