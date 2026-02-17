@@ -5,15 +5,19 @@ import { logout } from '@/lib/auth';
 import { LangProvider } from '@/components/LangContext';
 import { LangToggle } from '@/components/LangToggle';
 import { BookOpen, LogOut } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function Home() {
-  const [data, session] = await Promise.all([
-    getWeekData(),
-    getSession(),
-  ]);
+  const session = await getSession();
+
+  if (!session.user) {
+    redirect('/login');
+  }
+
+  const data = await getWeekData(session.user.id);
 
   return (
     <LangProvider>
@@ -24,7 +28,6 @@ export default async function Home() {
               <div className="h-7 w-7 rounded-lg bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
                 <BookOpen className="h-3.5 w-3.5 text-violet-400" />
               </div>
-
               <span className="text-sm font-semibold text-white tracking-tight font-display">
                 N3
               </span>
