@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useTransition } from 'react';
 import { DayCard } from '@/components/DayCard';
 import { WeekHeader } from '@/components/WeekHeader';
 import { SessionGuard } from '@/components/SessionGuard';
 import { useLang } from '@/components/LangContext';
+import { toggleTaskAction } from '@/app/actions/toggleTaskAction';
 import type { WeekData, StudyDay } from '@/lib/types';
 
 interface DashboardProps {
@@ -21,8 +22,8 @@ function normalizeDays(days: StudyDay[]): StudyDay[] {
 export function Dashboard({ initialData }: DashboardProps) {
   const { lang } = useLang();
   const [days, setDays] = useState<StudyDay[]>(normalizeDays(initialData.days));
+  const [isPending, startTransition] = useTransition();
 
-  // Undo stack: stores {dayId, taskId, prevCompleted}
   const [undoStack, setUndoStack] = useState<
     { dayId: string; taskId: string; prevCompleted: boolean }[]
   >([]);
@@ -31,17 +32,19 @@ export function Dashboard({ initialData }: DashboardProps) {
 
   const handleToggle = useCallback(
     (dayId: string, taskId: string, checked: boolean) => {
-      // Save previous state for undo
       setDays((prev) => {
         const prevTask = prev
           .find((d) => d.id === dayId)
           ?.tasks.find((t) => t.id === taskId);
+
         if (prevTask) {
           setUndoStack((s) => [
             { dayId, taskId, prevCompleted: prevTask.completed },
-            ...s.slice(0, 9), // keep max 10
+            ...s.slice(0, 9),
           ]);
+
           setShowUndo(true);
+
           if (undoTimer) clearTimeout(undoTimer);
           const timer = setTimeout(() => setShowUndo(false), 6000);
           setUndoTimer(timer);
@@ -49,9 +52,11 @@ export function Dashboard({ initialData }: DashboardProps) {
 
         return prev.map((day) => {
           if (day.id !== dayId) return day;
+
           const updatedTasks = day.tasks.map((t) =>
             t.id === taskId ? { ...t, completed: checked } : t
           );
+
           return {
             ...day,
             tasks: updatedTasks,
@@ -59,24 +64,32 @@ export function Dashboard({ initialData }: DashboardProps) {
           };
         });
       });
+
+      // 🔐 Persist to DB via Server Action
+      startTransition(() => {
+        toggleTaskAction(taskId, checked);
+      });
     },
     [undoTimer]
   );
 
   const handleUndo = useCallback(() => {
     if (undoStack.length === 0) return;
+
     const [last, ...rest] = undoStack;
     setUndoStack(rest);
     setShowUndo(rest.length > 0);
+
     if (undoTimer) clearTimeout(undoTimer);
-  
-    // Revert UI
+
     setDays((prev) =>
       prev.map((day) => {
         if (day.id !== last.dayId) return day;
+
         const updatedTasks = day.tasks.map((t) =>
           t.id === last.taskId ? { ...t, completed: last.prevCompleted } : t
         );
+
         return {
           ...day,
           tasks: updatedTasks,
@@ -85,24 +98,29 @@ export function Dashboard({ initialData }: DashboardProps) {
       })
     );
 
-  // Persist undo to DB via Server Action
-  import('@/lib/actions').then(({ toggleTask }) => {
-    toggleTask(last.taskId, last.prevCompleted);
-  });
-}, [undoStack, undoTimer]);
+    // 🔐 Persist undo via Server Action
+    startTransition(() => {
+      toggleTaskAction(last.taskId, last.prevCompleted);
+    });
+  }, [undoStack, undoTimer]);
 
-  // Cleanup timer on unmount
   useEffect(() => {
-    return () => { if (undoTimer) clearTimeout(undoTimer); };
+    return () => {
+      if (undoTimer) clearTimeout(undoTimer);
+    };
   }, [undoTimer]);
 
   const totalMinutes = days.reduce((sum, d) => sum + d.total_minutes, 0);
+
   const completedMinutes = days.reduce(
-    (sum, d) => sum + d.tasks.filter((t) => t.completed).reduce((s, t) => s + t.minutes, 0),
+    (sum, d) =>
+      sum + d.tasks.filter((t) => t.completed).reduce((s, t) => s + t.minutes, 0),
     0
   );
+
   const weekProgress =
     totalMinutes > 0 ? Math.round((completedMinutes / totalMinutes) * 100) : 0;
+
   const streak = days.filter((d) => d.completed).length;
 
   const liveData: WeekData = {
@@ -120,6 +138,7 @@ export function Dashboard({ initialData }: DashboardProps) {
     <div className="space-y-8">
       <SessionGuard />
       <WeekHeader data={liveData} lang={lang} />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {days.map((day, index) => (
           <DayCard
@@ -132,7 +151,6 @@ export function Dashboard({ initialData }: DashboardProps) {
         ))}
       </div>
 
-      {/* Undo toast */}
       <div
         className={`
           fixed bottom-6 left-1/2 -translate-x-1/2 z-40
@@ -145,6 +163,7 @@ export function Dashboard({ initialData }: DashboardProps) {
         <span className="text-sm text-zinc-300">
           {lang === 'ja' ? 'タスクを変更しました' : 'Tarefa alterada'}
         </span>
+
         <button
           onClick={handleUndo}
           className="text-sm font-semibold text-violet-400 hover:text-violet-300 transition-colors"

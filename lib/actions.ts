@@ -1,5 +1,4 @@
-
-export const runtime = 'nodejs';
+'use server';
 
 import { sql } from './db';
 import { WEEKLY_PLAN, getWeekStart } from './study-plan';
