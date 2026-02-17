@@ -86,8 +86,10 @@ export function Dashboard({ initialData }: DashboardProps) {
     );
 
   // Persist undo to DB via Server Action
-  toggleTask(last.taskId, last.prevCompleted);
-}, [undoStack, undoTimer, toggleTask]);
+  import('@/lib/actions').then(({ toggleTask }) => {
+    toggleTask(last.taskId, last.prevCompleted);
+  });
+}, [undoStack, undoTimer]);
 
   // Cleanup timer on unmount
   useEffect(() => {
