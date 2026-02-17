@@ -6,6 +6,7 @@ import { LangProvider } from '@/components/LangContext';
 import { LangToggle } from '@/components/LangToggle';
 import { BookOpen, LogOut } from 'lucide-react';
 import { redirect } from 'next/navigation';
+import { getWeekData, toggleTask } from '@/lib/actions';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -56,7 +57,7 @@ export default async function Home() {
         </nav>
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-          <Dashboard initialData={data} />
+          <Dashboard initialData={data} toggleTask={toggleTask} />
         </div>
       </main>
     </LangProvider>
