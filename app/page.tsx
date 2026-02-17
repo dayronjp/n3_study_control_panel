@@ -5,12 +5,21 @@ import { logout } from '@/lib/auth';
 import { LangProvider } from '@/components/LangContext';
 import { LangToggle } from '@/components/LangToggle';
 import { BookOpen, LogOut } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function Home() {
-  const [data, session] = await Promise.all([getWeekData(), getSession()]);
+  const session = await getSession();
+
+  // 🔒 Bloqueia acesso sem login
+  if (!session.user) {
+    redirect('/login');
+  }
+
+  // ✅ Busca dados apenas do usuário logado
+  const data = await getWeekData(session.user.id);
 
   return (
     <LangProvider>
@@ -25,11 +34,16 @@ export default async function Home() {
                 N3
               </span>
             </div>
+
             <div className="flex items-center gap-2">
               <LangToggle />
+
               {session.user && (
-                <span className="text-xs text-zinc-500 hidden sm:block">{session.user.name}</span>
+                <span className="text-xs text-zinc-500 hidden sm:block">
+                  {session.user.name}
+                </span>
               )}
+
               <form action={logout}>
                 <button
                   type="submit"
