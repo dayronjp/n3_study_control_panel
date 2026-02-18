@@ -32,7 +32,7 @@ export const WEEKLY_PLAN: DayPlan[] = [
   },
   {
     dayName: 'Quarta',
-    focus: 'Leitura Profunda',
+    focus: 'Leitura',
     totalMinutes: 90,
     tasks: [
       { title: 'Leitura longa (Minna ou texto N3)', minutes: 40 },
