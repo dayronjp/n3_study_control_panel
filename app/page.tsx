@@ -4,7 +4,7 @@ import { getSession } from '@/lib/session';
 import { logout } from '@/lib/auth';
 import { LangProvider } from '@/components/LangContext';
 import { LangToggle } from '@/components/LangToggle';
-import { BookOpen, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 
@@ -27,7 +27,7 @@ export default async function Home() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="h-7 w-7 rounded-lg bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
-                <BookOpen className="h-3.5 w-3.5 text-violet-400" />
+                <span className="text-lg leading-none">⛩️</span>
               </div>
               <span className="text-sm font-semibold text-white tracking-tight font-display">
                 N3

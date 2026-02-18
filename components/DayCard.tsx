@@ -114,6 +114,7 @@ export function DayCard({ day, index, onToggle, lang }: DayCardProps) {
               task={task}
               accentColor={colors.accent}
               onToggle={(taskId, checked) => onToggle(day.id, taskId, checked)}
+              lang={lang}
             />
           ))}
         </div>

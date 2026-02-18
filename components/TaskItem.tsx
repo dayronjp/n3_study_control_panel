@@ -4,25 +4,28 @@ import { useState, useTransition } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toggleTask } from '@/lib/actions';
 import { minutesToHours } from '@/lib/utils';
+import { translations, type Lang } from '@/lib/i18n';
 import type { Task } from '@/lib/types';
 
 interface TaskItemProps {
   task: Task;
   accentColor: string;
   onToggle: (taskId: string, checked: boolean) => void;
+  lang: Lang;
 }
 
-export function TaskItem({ task, accentColor, onToggle }: TaskItemProps) {
+export function TaskItem({ task, accentColor, onToggle, lang }: TaskItemProps) {
   const [isPending, startTransition] = useTransition();
 
   function handleChange(checked: boolean) {
-    // Update UI immediately (optimistic)
     onToggle(task.id, checked);
-    // Persist to DB in background
     startTransition(async () => {
       await toggleTask(task.id, checked);
     });
   }
+
+  // Translate task title using i18n
+  const taskLabel = translations[lang][task.title as keyof typeof translations.pt] ?? task.title;
 
   return (
     <div
@@ -48,7 +51,7 @@ export function TaskItem({ task, accentColor, onToggle }: TaskItemProps) {
           ${task.completed ? 'line-through text-zinc-500' : 'text-zinc-300'}
         `}
       >
-        {task.title}
+        {taskLabel}
       </span>
       <span className="text-xs text-zinc-600 tabular-nums shrink-0">
         {minutesToHours(task.minutes)}
