@@ -23,11 +23,10 @@ export const WEEKLY_PLAN: DayPlan[] = [
     focus: 'Fixar e usar',
     totalMinutes: 90,
     tasks: [
-      { title: 'Kyoto', minutes: 20 },
-      { title: 'JapaLab', minutes: 20 },
-      { title: 'Anki', minutes: 20 },
+      { title: 'JapaLab (vídeo + resumo rápido)', minutes: 20 },
+      { title: 'Produção ativa (frases + mini texto)', minutes: 40 },
+      { title: 'Anki', minutes: 15 },
       { title: 'Kanji', minutes: 15 },
-      { title: 'Output', minutes: 15 },
     ],
   },
   {
@@ -46,11 +45,10 @@ export const WEEKLY_PLAN: DayPlan[] = [
     focus: 'Escuta',
     totalMinutes: 90,
     tasks: [
-      { title: 'Kyoto', minutes: 20 },
-      { title: 'JapaLab', minutes: 20 },
-      { title: 'Anki', minutes: 20 },
-      { title: 'Kanji', minutes: 15 },
-      { title: 'Listening + shadowing', minutes: 15 },
+      { title: 'Listening principal (formato N3)', minutes: 40 },
+      { title: 'Correção + análise detalhada', minutes: 20 },
+      { title: 'Shadowing intenso', minutes: 20 },
+      { title: 'Reescuta sem pausa', minutes: 10 },
     ],
   },
   {
@@ -58,10 +56,10 @@ export const WEEKLY_PLAN: DayPlan[] = [
     focus: 'Dia de teste',
     totalMinutes: 90,
     tasks: [
+      { title: 'Mini simulado', minutes: 35 },
+      { title: 'Correção detalhada', minutes: 30 },
+      { title: 'Revisão focada nos erros', minutes: 15 },
       { title: 'Anki', minutes: 20 },
-      { title: 'Kanji', minutes: 15 },
-      { title: 'Revisão de gramática', minutes: 30 },
-      { title: 'Mini teste', minutes: 25 },
     ],
   },
   {
