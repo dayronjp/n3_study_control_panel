@@ -32,14 +32,13 @@ export const WEEKLY_PLAN: DayPlan[] = [
   },
   {
     dayName: 'Quarta',
-    focus: 'Leitura',
+    focus: 'Leitura Profunda',
     totalMinutes: 90,
     tasks: [
-      { title: 'Kyoto', minutes: 20 },
-      { title: 'JapaLab', minutes: 20 },
-      { title: 'Anki', minutes: 20 },
-      { title: 'Kanji', minutes: 15 },
-      { title: 'Leitura longa', minutes: 15 },
+      { title: 'Leitura longa (Minna ou texto N3)', minutes: 40 },
+      { title: 'Análise do texto (vocabulário + estrutura)', minutes: 25 },
+      { title: 'Anki', minutes: 15 },
+      { title: 'Kanji', minutes: 10 },
     ],
   },
   {
