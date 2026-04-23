@@ -192,3 +192,193 @@ Veja o arquivo completo em [`schema.sql`](./schema.sql).
 | Variável       | Descrição                        | Obrigatória |
 | -------------- | -------------------------------- | ----------- |
 | `DATABASE_URL` | Connection string do Neon        | ✅ Sim      |
+
+
+# N3 Study Panel API
+
+API REST para acessar o cronograma de estudos JLPT N3.
+
+## Endpoints
+
+### GET /api/today
+
+Retorna o cronograma do dia atual (segunda a sábado).
+
+**Exemplo de request:**
+```bash
+curl http://localhost:3000/api/today
+```
+
+**Exemplo de response (sucesso):**
+```json
+{
+  "day": "Segunda",
+  "focus": "Entender nova gramática",
+  "date": "2026-02-16",
+  "weekStart": "2026-02-16",
+  "stats": {
+    "totalMinutes": 90,
+    "completedMinutes": 40,
+    "progress": 40,
+    "completedTasks": 2,
+    "totalTasks": 5,
+    "isCompleted": false
+  },
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Kyoto",
+      "minutes": 20,
+      "completed": true
+    },
+    {
+      "id": "2",
+      "title": "JapaLab",
+      "minutes": 20,
+      "completed": true
+    },
+    {
+      "id": "3",
+      "title": "Anki",
+      "minutes": 20,
+      "completed": false
+    },
+    {
+      "id": "4",
+      "title": "Kanji",
+      "minutes": 15,
+      "completed": false
+    },
+    {
+      "id": "5",
+      "title": "Revisão geral",
+      "minutes": 15,
+      "completed": false
+    }
+  ]
+}
+```
+
+**Exemplo de response (domingo):**
+```json
+{
+  "error": "No schedule for Sundays",
+  "message": "O cronograma semanal vai de segunda a sábado"
+}
+```
+
+---
+
+### GET /api/week
+
+Retorna o cronograma completo da semana (segunda a sábado).
+
+**Exemplo de request:**
+```bash
+curl http://localhost:3000/api/week
+```
+
+**Exemplo de response:**
+```json
+{
+  "weekStart": "2026-02-16",
+  "weekEnd": "2026-02-21",
+  "stats": {
+    "totalMinutes": 630,
+    "completedMinutes": 180,
+    "weekProgress": 29,
+    "completedDays": 1,
+    "totalDays": 6,
+    "streak": 1
+  },
+  "schedule": [
+    {
+      "day": "Segunda",
+      "focus": "Entender nova gramática",
+      "stats": {
+        "totalMinutes": 90,
+        "completedMinutes": 90,
+        "progress": 100,
+        "completedTasks": 5,
+        "totalTasks": 5,
+        "isCompleted": true
+      },
+      "tasks": [...]
+    },
+    {
+      "day": "Terça",
+      "focus": "Fixar e usar",
+      "stats": { ... },
+      "tasks": [...]
+    },
+    ...
+  ]
+}
+```
+
+---
+
+## Como usar em outra aplicação
+
+### JavaScript/Node.js
+```javascript
+// Pegar cronograma de hoje
+const response = await fetch('http://localhost:3000/api/today');
+const data = await response.json();
+
+if (response.ok) {
+  console.log(`Hoje é ${data.day}: ${data.focus}`);
+  console.log(`Progresso: ${data.stats.progress}%`);
+  console.log('Tasks:', data.tasks);
+} else {
+  console.error(data.message);
+}
+```
+
+### Python
+```python
+import requests
+
+response = requests.get('http://localhost:3000/api/today')
+data = response.json()
+
+if response.status_code == 200:
+    print(f"Hoje é {data['day']}: {data['focus']}")
+    print(f"Progresso: {data['stats']['progress']}%")
+    for task in data['tasks']:
+        status = '✓' if task['completed'] else '○'
+        print(f"{status} {task['title']} ({task['minutes']}min)")
+```
+
+### cURL
+```bash
+# Ver cronograma de hoje
+curl http://localhost:3000/api/today | jq
+
+# Ver semana completa
+curl http://localhost:3000/api/week | jq
+
+# Ver só as tasks de hoje
+curl http://localhost:3000/api/today | jq '.tasks'
+
+# Ver progresso da semana
+curl http://localhost:3000/api/week | jq '.stats.weekProgress'
+```
+
+---
+
+## Códigos de Status HTTP
+
+- **200 OK** - Sucesso
+- **404 Not Found** - Dia/semana não encontrado ou é domingo
+- **500 Internal Server Error** - Erro no servidor
+
+---
+
+## Notas
+
+- A API retorna dados apenas de leitura (GET)
+- Não é necessária autenticação (por enquanto)
+- Os IDs retornados são strings
+- Domingos não têm cronograma (retorna 404)
+- A semana é criada automaticamente quando você acessa o painel pela primeira vez
