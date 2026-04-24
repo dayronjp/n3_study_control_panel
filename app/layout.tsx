@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'N3 Study Control Panel',
+  title: 'KotoJun',
   description: 'Dashboard de controle de estudos para o JLPT N3',
   icons: {
     icon: "data:image/svg+xml,\

@@ -3,7 +3,7 @@ export type Lang = 'pt' | 'ja';
 export const translations = {
   pt: {
     // Nav
-    appName: 'N3 Study Panel',
+    appName: 'Koto Jun',
     logout: 'Sair',
 
     // Header
@@ -79,7 +79,7 @@ export const translations = {
   },
   ja: {
     // Nav
-    appName: 'N3 学習パネル',
+    appName: 'コト順',
     logout: 'ログアウト',
 
     // Header

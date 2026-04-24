@@ -1,30 +1,24 @@
-import { getIronSession, type IronSessionData } from 'iron-session';
+import { getIronSession, type SessionOptions } from 'iron-session';
 import { cookies } from 'next/headers';
 
-// Extend iron-session types
-declare module 'iron-session' {
-  interface IronSessionData {
-    user?: {
-      id: number;
-      name: string;
-    };
-  }
+export interface SessionData {
+  user?: {
+    id: number;
+    name: string;
+  };
 }
 
-const sessionOptions = {
-  password: process.env.SESSION_SECRET as string,
+export const sessionOptions: SessionOptions = {
+  password: process.env.SESSION_SECRET!,
   cookieName: 'n3study_session',
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 60 * 60 * 2, // 2 hours — matches SessionGuard client timeout
+    maxAge: 60 * 60 * 2,
   },
 };
 
 export async function getSession() {
-  const session = await getIronSession<IronSessionData>(
-    cookies(),
-    sessionOptions
-  );
-  return session;
+  const cookieStore = await cookies();
+  return getIronSession<SessionData>(cookieStore, sessionOptions);
 }

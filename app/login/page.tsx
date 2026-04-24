@@ -14,7 +14,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
       <div className="relative w-full max-w-sm">
         <div className="flex flex-col items-center mb-8">
           <h1 className="text-xl font-bold text-white font-display">
-            N3 Study Panel
+            KotoJun
           </h1>
           <p className="text-sm text-zinc-500 mt-1">
             Faça login para continuar
